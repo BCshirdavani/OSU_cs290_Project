@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+	<title>Demo Page</title>
+</head>
+<body>
+	<h1> main.handlebars </h1>
+    <form>
+      <fieldset>
+        <legend>Enter New Workout Here:</legend>
+        <label for="work_name"></label>
+				Name:<input type="text" name="work_name" id="work_name"><br>
+				Reps:<input type="text" name="work_reps" id="work_reps"><br>
+				Weight:<input type="text" name="work_weight" id="work_weight"><br>
+				Date:<input type="text" name="work_date" id="work_date"><br>
+				Lbs:<input type="text" name="work_lbs" id="work_lbs">
+        <input type="submit" id="work_Submit" value="Add Workout">
+      </fieldset>
+    </form>
+		body from main:
+	{{{body}}}
+</body>
+</html>
+
+
+
+
+
+
+<script>
+	// make listeners for INSERT workout button
+	document.addEventListener('DOMContentLoaded', bindButtons); // was on DOMContentLoaded
+	function bindButtons(){
+		document.getElementById('work_Submit').addEventListener('click', function(event){
+			console.log("making listener for INSERT button. Inside listerner...");
+			var req = new XMLHttpRequest();
+			var payload = {wName:null, wReps:null, wWeight:null, wDate:null, wLbs:null};
+			payload.wName = document.getElementById('work_name').value;
+			payload.wReps = document.getElementById('work_reps').value;
+			payload.wWeight = document.getElementById('work_weight').value;
+			payload.wDate = document.getElementById('work_date').value;
+			payload.wLbs = document.getElementById('work_lbs').value;
+			req.open('GET', 'http://localhost:3000/insert?c=' + payload.wName + '&d=' + payload.wReps + '&e=' + payload.wWeight + '&f=' + payload.wDate + '&g=' + payload.wLbs, true);
+			req.send(null);
+			console.log("first GET just happened...");
+			req.addEventListener('load',function(){
+				var req2 = new XMLHttpRequest();
+				req2.open('GET', 'http://localhost:3000/', false)
+				req2.send(null);
+				console.log("GET for showing / just happened.");
+				event.preventDefault();
+			});
+			console.log("End of GET block");
+		})
+	}
+</script>
+
+

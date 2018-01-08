@@ -1,0 +1,208 @@
+<h1>MySQL Results:</h1>
+<h2> home.handlebars </h2>
+
+<p>
+    Status Update from home here:
+    {{statusComment}}
+</p>
+
+<p>
+    Results from home here:
+    {{results}}
+</p>
+
+<p>
+    Table here:
+    <table id="workTABLE" border="1">
+        <tr>
+            <th>Name</th>
+            <th>Reps</th>
+            <th>Weight</th>
+            <th>Date</th>
+            <th>Lbs</th>
+        </tr>
+        table1 from home
+    {{#each table1}}
+        <tr>
+            <td>{{this.name}}</td> 
+            <td>{{this.reps}}</td> 
+            <td>{{this.weight}}</td> 
+            <td>{{this.date}}</td>
+            <td>{{this.lbs}}</td>
+            <td><button onclick="goEDIT(id,value)" class="edit" row=count value={{{json this}}} id={{this.id}} name=edit_{{this.id}} >EDIT</button></td>
+            <td><button onclick="deleteFUNC(id)" class="delete" row=count id={{this.id}} name=delete_{{this.id}}>DELETE</button></td>
+        </tr>
+    {{/each}}
+    </table>
+</p>
+
+<div id="editSpace" class="editDiv"></div>
+    {{!-- edit space from home here:
+    {{editSpace}} --}}
+
+
+<script>
+// testing logs
+/*
+console.log('this: '+this);
+console.log("document.getElementsByClassName('edit')[0].id: "+document.getElementsByClassName('edit')[0].id);
+console.log("document.getElementsByClassName('edit')[0].name: "+document.getElementsByClassName('edit')[0].name);
+console.log("document.getElementsByClassName('edit')[1].id: "+document.getElementsByClassName('edit')[1].id);
+console.log("document.getElementsByClassName('edit')[1].name: "+document.getElementsByClassName('edit')[1].name);
+console.log("document.getElementsByClassName('edit')[1].id: "+document.getElementsByClassName('edit')[1].id);
+//console.log("document.getElementsByName(edit_1)[0].name: "+document.getElementsByName('edit_1')[0].name);
+console.log("document.getElementsByName(edit_1).length: "+document.getElementsByName('edit_1').length);
+console.log("document.getElementsByClassName('edit').length: "+document.getElementsByClassName('edit').length);
+*/
+
+// make array for delte buttons
+var arrayDELETE = [];
+for(var i=0; i < document.getElementsByClassName('delete').length; i++){
+    arrayDELETE.push(document.getElementsByClassName('delete')[i]);
+}
+
+// print test log for arrayDELETE
+for(var i=0; i < arrayDELETE.length; i++){
+    console.log('arrayDELETE['+i+'].id: '+i+': ' + arrayDELETE[i].id + ' ' + arrayDELETE[i].name);
+    console.log(arrayDELETE[i]);
+}
+
+
+// ********** Define DOM "onclick" for the DELETE buttons
+function deleteFUNC(id){
+    var req = new XMLHttpRequest();
+    var payload = {idDELETE:null};
+    payload.idDELETE = id;
+    req.open('GET', 'http://localhost:3000/delete?id=' + payload.idDELETE, true);
+    req.send(null);
+    console.log("first GET just happened for DELETE...");
+    req.addEventListener('load',function(){
+        var req2 = new XMLHttpRequest();
+        req2.open('GET', 'http://localhost:3000/', false)
+        req2.send(null);
+        console.log("GET for showing / just happened.");
+        //event.preventDefault();
+    });
+    //event.preventDefault();
+    console.log("End of GET for DELETE");
+}
+
+// ********** Define DOM "onclick" for the EDIT buttons
+function goEDIT(id, value) { 
+    // making JSON from the data in value parameter
+    var myData = JSON.parse(value);
+    console.log('myData is: ' + myData);
+    console.log('myData.name is: ' + myData.name);
+
+
+    // test to add content using javascript
+    var spot = document.getElementById("editSpace");
+    var newContent = document.createTextNode(value);
+    var currentDiv = document.getElementsByClassName("editDiv"); 
+    spot.appendChild(newContent);
+
+    // making the form
+    my_form=document.createElement('FORM');
+    my_form.name='myForm';
+        // name input
+    form_name=document.createElement('INPUT');
+    form_name.label = "name";
+    form_name.type='TEXT';
+    form_name.id = "up_name";
+    form_name.name='name';
+    form_name.value=myData.name;
+    name_label = document.createTextNode('name: ');
+    var br = document.createElement("br");
+    my_form.appendChild(br);
+    my_form.appendChild(name_label);
+    my_form.appendChild(form_name);
+    my_form.appendChild(br);
+        // reps input
+    form_reps=document.createElement('INPUT');
+    form_reps.label = "reps";
+    form_reps.type='TEXT';
+    form_reps.id = "up_reps";
+    form_reps.name='reps';
+    form_reps.value=myData.reps;
+    reps_label = document.createTextNode('reps: ');
+    my_form.appendChild(br);
+    my_form.appendChild(reps_label);
+    my_form.appendChild(form_reps);
+    my_form.appendChild(br);
+        // weight input
+    form_weight=document.createElement('INPUT');
+    form_weight.label = "weight";
+    form_weight.type='TEXT';
+    form_weight.id = "up_weight";
+    form_weight.name='weight';
+    form_weight.value=myData.weight;
+    weight_label = document.createTextNode('weight: ');
+    var br = document.createElement("br");
+    my_form.appendChild(weight_label);
+    my_form.appendChild(form_weight);
+    my_form.appendChild(br);
+        // date input
+    form_date=document.createElement('INPUT');
+    form_date.label = "date";
+    form_date.type='TEXT';
+    form_date.id = "up_date";
+    form_date.name='date';
+    form_date.value=myData.date;
+    date_label = document.createTextNode('date: ');
+    var br = document.createElement("br");
+    my_form.appendChild(date_label);
+    my_form.appendChild(form_date);
+    my_form.appendChild(br);
+        // lbs input
+    form_lbs=document.createElement('INPUT');
+    form_lbs.label = "lbs";
+    form_lbs.type='TEXT';
+    form_lbs.id = "up_lbs";
+    form_lbs.name='lbs';
+    form_lbs.value=myData.lbs;
+    lbs_label = document.createTextNode('lbs: ');
+    var br = document.createElement("br");
+    my_form.appendChild(lbs_label);
+    my_form.appendChild(form_lbs);
+    my_form.appendChild(br);
+    my_form.appendChild(br);
+    editBUTTON = document.createElement('BUTTON');
+    editBUTTON.textContent = 'UPDATE';
+    editBUTTON.addEventListener('click', function(event){
+			console.log("making listener for EDIT button. Inside listerner...");
+			var req = new XMLHttpRequest();
+			var payload = {wName:null, wReps:null, wWeight:null, wDate:null, wLbs:null};
+			payload.wName = document.getElementById('up_name').value;
+			payload.wReps = document.getElementById('up_reps').value;
+			payload.wWeight = document.getElementById('up_weight').value;
+			payload.wDate = document.getElementById('up_date').value;
+			payload.wLbs = document.getElementById('up_lbs').value;
+			req.open('GET', 'http://localhost:3000/safe-update?c=' + payload.wName + '&d=' + payload.wReps + '&e=' + payload.wWeight + '&f=' + payload.wDate + '&g=' + payload.wLbs, true);
+			req.send(null);
+			console.log("first GET just happened for EDIT update...");
+			req.addEventListener('load',function(){
+				var req2 = new XMLHttpRequest();
+				req2.open('GET', 'http://localhost:3000/', false)
+				req2.send(null);
+				console.log("GET for showing / just happened.");
+				event.preventDefault();
+			});
+			console.log("End of GET block for EDIT update");
+		})
+    my_form.appendChild(editBUTTON);
+
+
+    //spot.appendChild(br);
+    //spot.appendChild(name_label);
+    spot.appendChild(my_form);
+    //document.my_form.submit();
+
+    //my_form.action='http://www.another_page.com/index.htm';
+    //my_form.method='POST';
+
+};
+    
+
+</script>
+
+
